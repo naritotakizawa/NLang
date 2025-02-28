@@ -19,6 +19,11 @@ def ast_to_dict(node):
 class ASTNode:
     pass
 
+@dataclass
+class Assignment(ASTNode):
+    name: str
+    value: ASTNode
+
 # 数値リテラル
 @dataclass
 class Number(ASTNode):
