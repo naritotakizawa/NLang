@@ -10,7 +10,7 @@ TOKEN_SPECIFICATION = [
     ('NEWLINE',  r'\n'),           # 改行
     ('SKIP',     r'[ \t]+'),       # 空白やタブ（スキップ）
     ('COMMENT',  r'#.*'),          # コメント（スキップ）
-    ('OPERATOR', r'==|!=|<=|>=|[+\-*/><=]'),  # 各種演算子
+    ('OPERATOR', r'==|!=|<=|>=|[+\-*/><]'),  # 各種演算子
     ('PUNCT',    r'[(){}:,=]'),     # 各種記号
     ('IDENTIFIER', r'[a-zA-Z_]\w*'),  # 変数や関数名（後でKEYWORDと区別）
     ('UNKNOWN',  r'.'),            # 不明な文字
