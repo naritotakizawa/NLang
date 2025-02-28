@@ -65,6 +65,7 @@ class IfStatement(ASTNode):
     condition: ASTNode
     body: list
     else_body: list = None  # 追加！
+    elif_blocks: list = None  # `elif` のリスト
 
 # プログラム全体
 @dataclass
