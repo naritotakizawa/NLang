@@ -46,7 +46,7 @@ class Parser:
 
     
     def parse_assignment(self):
-        name = self.consume()[1]  # 変数名 (例: 'x')
+        name = self.consume()[1]  # 変数名
         self.consume()  # "=" を消費
         value = self.parse_expression()  # 右辺の式を解析
         return Assignment(name, value)
