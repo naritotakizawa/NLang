@@ -28,7 +28,12 @@ class BytecodeGenerator:
         elif isinstance(node, BinaryOp):
             self.generate(node.left)
             self.generate(node.right)
-            self.bytecode.append(("BINARY_OP", node.op))
+            if node.op in {"+", "-", "*", "/"}:
+                self.bytecode.append(("BINARY_OP", node.op))
+            elif node.op in {"<", ">", "<=", ">=", "==", "!="}:
+                self.bytecode.append(("COMPARE_OP", node.op))  # 比較演算子用の命令に変更！
+            else:
+                raise ValueError(f"Unsupported operator: {node.op}")
 
         elif isinstance(node, IfStatement):
             self.generate(node.condition)
