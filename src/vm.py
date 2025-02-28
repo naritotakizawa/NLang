@@ -37,7 +37,7 @@ class VirtualMachine:
                 right = self.stack.pop()
                 left = self.stack.pop()
                 op_symbol = args[0]
-
+            
                 if op_symbol == "+":
                     self.stack.append(left + right)
                 elif op_symbol == "-":
@@ -48,6 +48,26 @@ class VirtualMachine:
                     self.stack.append(left / right)
                 else:
                     raise ValueError(f"Unsupported operator: {op_symbol}")
+            
+            elif op == "COMPARE_OP":
+                right = self.stack.pop()
+                left = self.stack.pop()
+                op_symbol = args[0]
+            
+                if op_symbol == "<":
+                    self.stack.append(left < right)
+                elif op_symbol == ">":
+                    self.stack.append(left > right)
+                elif op_symbol == "<=":
+                    self.stack.append(left <= right)
+                elif op_symbol == ">=":
+                    self.stack.append(left >= right)
+                elif op_symbol == "==":
+                    self.stack.append(left == right)
+                elif op_symbol == "!=":
+                    self.stack.append(left != right)
+                else:
+                    raise ValueError(f"Unsupported comparison operator: {op_symbol}")
 
             elif op == "JUMP_IF_FALSE":
                 condition = self.stack.pop()
