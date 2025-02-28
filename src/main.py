@@ -4,7 +4,8 @@ import os
 # srcディレクトリをパスに追加
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from tokenize import tokenize  # そのままimport
+from tokenize import tokenize
+from parser import Parser
 
 def main():
     if len(sys.argv) != 2:
