@@ -36,15 +36,15 @@ class BytecodeGenerator:
                 raise ValueError(f"Unsupported operator: {node.op}")
 
         elif isinstance(node, IfStatement):
-            self.generate(node.condition)
+            self.generate(node.condition)  # 条件式を評価
             jump_idx = len(self.bytecode)
             self.bytecode.append(("JUMP_IF_FALSE", None))  # 後でアドレスを埋める
-
+        
             for stmt in node.body:
                 self.generate(stmt)
-
+        
             self.bytecode[jump_idx] = ("JUMP_IF_FALSE", len(self.bytecode))  # アドレス修正
-
+        
         elif isinstance(node, FunctionDef):
             # 関数定義は将来的に実装（関数オブジェクトを作る）
             pass
