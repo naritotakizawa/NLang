@@ -68,10 +68,17 @@ class Parser:
 
     def parse_if(self):
         self.consume()  # "if"
-        condition = self.parse_expression()  # 条件式 (例: x > 5)
+        condition = self.parse_expression()  # 条件式
         self.consume()  # ":"
-        body = self.parse_block()  # インデントされたブロックを解析
-        return IfStatement(condition, body)
+        body = self.parse_block()  # インデントブロック
+    
+        else_body = []  # else のブロック
+        if self.peek() and self.peek()[0] == "KEYWORD" and self.peek()[1] == "else":
+            self.consume()  # "else"
+            self.consume()  # ":"
+            else_body = self.parse_block()  # else のブロックを解析
+    
+        return IfStatement(condition, body, else_body)
     
     def parse_block(self):
         """ インデントされたブロックを解析 """
