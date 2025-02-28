@@ -40,7 +40,7 @@ class Parser:
         # 変数代入のチェック (IDENTIFIER "a = 1" ...)
         if self.pos + 1 < len(self.tokens):            
             next_token = self.tokens[self.pos + 1]
-            if token[0] == "IDENTIFIER" and next_token][0] == "PUNCT" and next_token[1] == "=":
+            if token[0] == "IDENTIFIER" and next_token[0] == "PUNCT" and next_token[1] == "=":
                 return self.parse_assignment()
 
     
