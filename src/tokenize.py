@@ -11,7 +11,7 @@ TOKEN_SPECIFICATION = [
     ('SKIP',     r'[ \t]+'),       # 空白やタブ（スキップ）
     ('COMMENT',  r'#.*'),          # コメント（スキップ）
     ('PUNCT',    r'[(){}:,=]'),     # 記号
-    ('OPERATOR', r'[+\-*/><]+'),  # 演算子（新規追加）
+    ('OPERATOR', r'[+\-*/><=!]=?|==|!='),
     ('IDENTIFIER', r'[a-zA-Z_]\w*'),  # 変数や関数名（後でKEYWORDと区別）
     ('UNKNOWN',  r'.'),            # 不明な文字
 ]
