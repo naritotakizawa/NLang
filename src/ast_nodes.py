@@ -15,7 +15,10 @@ def ast_to_dict(node):
             "type": "IfStatement",
             "condition": ast_to_dict(node.condition),
             "body": ast_to_dict(node.body),
-            "elif_blocks": ast_to_dict(node.elif_blocks),
+            "elif_blocks": [
+                {"condition": ast_to_dict(cond), "body": ast_to_dict(body)}
+                for cond, body in (node.elif_blocks or [])
+            ],  # ✅ タプルを辞書に変換！
             "else_body": ast_to_dict(node.else_body)
         }
     elif isinstance(node, BinaryOp):
