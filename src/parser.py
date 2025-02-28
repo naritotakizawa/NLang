@@ -37,6 +37,13 @@ class Parser:
             elif token[1] == "if":
                 return self.parse_if()
 
+        # 変数代入のチェック (IDENTIFIER "a = 1" ...)
+        if self.pos + 1 < len(self.tokens):            
+            next_token = self.tokens[self.pos + 1]
+            if token[0] == "IDENTIFIER" and next_token][0] == "PUNCT" and next_token[1] == "=":
+                return self.parse_assignment()
+
+    
     def parse_assignment(self):
         name = self.consume()[1]  # 変数名 (例: 'x')
         self.consume()  # "=" を消費
