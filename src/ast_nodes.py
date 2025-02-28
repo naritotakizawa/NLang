@@ -5,6 +5,11 @@ import json
 def ast_to_dict(node):
     if isinstance(node, list):
         return [ast_to_dict(n) for n in node]
+    elif isinstance(node, Program):  # ← 追加！
+        return {
+            "type": "Program",
+            "statements": ast_to_dict(node.statements)
+        }
     elif isinstance(node, IfStatement):
         return {
             "type": "IfStatement",
@@ -13,7 +18,7 @@ def ast_to_dict(node):
             "elif_blocks": ast_to_dict(node.elif_blocks),
             "else_body": ast_to_dict(node.else_body)
         }
-    elif isinstance(node, BinaryOp):  # BinaryOp を変換！
+    elif isinstance(node, BinaryOp):
         return {
             "type": "BinaryOp",
             "left": ast_to_dict(node.left),
@@ -40,7 +45,6 @@ def ast_to_dict(node):
         }
     else:
         raise TypeError(f"Unsupported AST node type: {type(node).__name__}")
-
 
 
 # ASTの基本クラス
