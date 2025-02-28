@@ -67,18 +67,12 @@ class Parser:
         return FunctionDef(name, [], body)
 
     def parse_if(self):
-        """ if文の解析 """
         self.consume()  # "if"
-        condition = self.parse_expression()
-    
-        # ":" を明示的に消費
-        colon = self.consume()
-        if colon[0] != "PUNCT" or colon[1] != ":":
-            raise SyntaxError(f"Expected ':', but got {colon}")
-    
-        body = self.parse_block()
+        condition = self.parse_expression()  # 条件式 (例: x > 5)
+        self.consume()  # ":"
+        body = self.parse_block()  # インデントされたブロックを解析
         return IfStatement(condition, body)
-
+    
     def parse_block(self):
         """ インデントされたブロックを解析 """
         self.consume()  # "INDENT"
