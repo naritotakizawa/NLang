@@ -63,7 +63,8 @@ class FunctionDef(ASTNode):
 @dataclass
 class IfStatement(ASTNode):
     condition: ASTNode
-    body: List[ASTNode]
+    body: list
+    else_body: list = None  # 追加！
 
 # プログラム全体
 @dataclass
