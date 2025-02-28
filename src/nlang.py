@@ -5,6 +5,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import json
+from pprint import pprint
 from tokenize import tokenize, print_tokens
 from parser import Parser
 from ast_nodes import ast_to_dict
@@ -15,7 +16,7 @@ def run(code, debug=True):
     # トークナイズ
     tokens = tokenize(code)
     if debug:
-        print_tokens(tokens)  # トークンを出力
+        pprint(tokens)  # トークンを出力
 
     # パース
     parser = Parser(tokens)
@@ -24,15 +25,14 @@ def run(code, debug=True):
     # AST を出力
     if debug: 
         print("AST:")
-        print(json.dumps(ast_to_dict(ast), indent=2, ensure_ascii=False))
+        pprint(ast)
 
     # バイトコード生成
     generator = BytecodeGenerator()
     bytecode = generator.generate(ast)
     if debug: 
         print("Bytecode:")
-        for instr in bytecode:
-            print(f"  {instr}")
+        pprint(bytecode)
 
     # 仮想マシンで実行
     vm = VirtualMachine()
