@@ -36,8 +36,12 @@ class Parser:
                 return self.parse_function()
             elif token[1] == "if":
                 return self.parse_if()
-        
-        return self.parse_expression()
+
+    def parse_assignment(self):
+        name = self.consume()[1]  # 変数名 (例: 'x')
+        self.consume()  # "=" を消費
+        value = self.parse_expression()  # 右辺の式を解析
+        return Assignment(name, value)
 
     def parse_function(self):
         """ 関数定義の解析 """
