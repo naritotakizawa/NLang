@@ -1,4 +1,4 @@
-print("Hello, world!")
-if 10 > 5:
-    print("Indent test")
-print("Done")
+x = 10
+print(x)
+y = x + 5
+print(y)
