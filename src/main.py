@@ -19,13 +19,15 @@ def main():
 
     # トークナイズ
     tokens = tokenize(code)
+    print_tokens(tokens)  # トークンを出力
 
     # パース
     parser = Parser(tokens)
     ast = parser.parse()
 
-    # ASTの表示
-    print(ast)
+    # AST を出力
+    print("AST:")
+    print(json.dumps(ast_to_dict(ast), indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()
