@@ -1,0 +1,23 @@
+name: Run Python Script
+
+#on: [push, pull_request]  # push または pull request が発生したら実行
+on:
+  workflow_dispatch:
+jobs:
+  run-python:
+    runs-on: ubuntu-latest  # Linux 環境で実行
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3  # リポジトリのコードを取得
+
+      - name: Set up Python
+        uses: actions/setup-python@v4  # Python環境をセットアップ
+        with:
+          python-version: '3.11'  # 必要なPythonのバージョン
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt || true  # `requirements.txt` があればインストール
+
+      - name: Run Python script
+        run: python src/main.py  # `src/main.py` を実行
