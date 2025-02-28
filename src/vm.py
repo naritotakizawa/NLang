@@ -1,7 +1,7 @@
 class VirtualMachine:
     def __init__(self):
         self.stack = []  # スタック
-        self.globals = {}  # グローバル環境
+        self.variables = {}  # 変数を保存する辞書
 
     def execute(self, bytecode):
         """ バイトコードを実行 """
@@ -29,15 +29,11 @@ class VirtualMachine:
                 func_name = args[0]
                 arg_count = args[1]
                 args = [self.stack.pop() for _ in range(arg_count)][::-1]
-
-                if func_name in self.globals:
-                    self.stack.append(self.globals[func_name](*args))
+                if func_name == "print":
+                    print(*args)
+                    self.stack.append(None)
                 else:
-                    if func_name == "print":
-                        print(*args)
-                        self.stack.append(None)
-                    else:
-                        raise NameError(f"Undefined function: {func_name}")
+                    raise NameError(f"Undefined function: {func_name}")
 
             elif op == "BINARY_OP":
                 right = self.stack.pop()
