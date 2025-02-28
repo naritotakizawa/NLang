@@ -82,4 +82,21 @@ class BytecodeGenerator:
             else:
                 # elseが無い場合、最後にジャンプ先を末尾に合わせる
                 self.bytecode[last_jump_abs_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))
+        elif isinstance(node, FunctionCall):
+            for arg in node.args:
+                self.generate(arg)
+            self.bytecode.append(("CALL_FUNCTION", node.name, len(node.args)))
 
+        elif isinstance(node, Identifier):
+            self.bytecode.append(("LOAD_NAME", node.name))
+
+        elif isinstance(node, Number):
+            self.bytecode.append(("LOAD_CONST", node.value))
+
+        elif isinstance(node, String):
+            self.bytecode.append(("LOAD_CONST", node.value))
+
+        else:
+            raise ValueError(f"Unsupported AST node type: {type(node).__name__}")
+
+        return self.bytecode
