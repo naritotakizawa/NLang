@@ -45,8 +45,12 @@ class Parser:
         name = self.consume()[1]  # 関数名
         self.consume()  # "("
         self.consume()  # ")"
-        self.consume()  # ":"
-        
+    
+        # ":" を明示的に消費
+        colon = self.consume()
+        if colon[0] != "PUNCT" or colon[1] != ":":
+            raise SyntaxError(f"Expected ':', but got {colon}")
+    
         body = self.parse_block()
         return FunctionDef(name, [], body)
 
@@ -54,8 +58,12 @@ class Parser:
         """ if文の解析 """
         self.consume()  # "if"
         condition = self.parse_expression()
-        self.consume()  # ":"
-
+    
+        # ":" を明示的に消費
+        colon = self.consume()
+        if colon[0] != "PUNCT" or colon[1] != ":":
+            raise SyntaxError(f"Expected ':', but got {colon}")
+    
         body = self.parse_block()
         return IfStatement(condition, body)
 
