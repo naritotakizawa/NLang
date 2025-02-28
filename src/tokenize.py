@@ -18,6 +18,14 @@ TOKEN_SPECIFICATION = [
 
 token_re = re.compile('|'.join(f'(?P<{name}>{pattern})' for name, pattern in TOKEN_SPECIFICATION))
 
+def print_tokens(tokens):
+    """ トークンを見やすく出力 """
+    print("Tokens:")
+    for token in tokens:
+        print(f"  {token[0]:<10} {token[1]}")
+    print()
+
+
 def tokenize(code):
     tokens = []
     indent_stack = [0]  # インデントレベルのスタック
