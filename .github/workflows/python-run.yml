@@ -20,4 +20,4 @@ jobs:
           pip install -r requirements.txt || true  # `requirements.txt` があればインストール
 
       - name: Run Python script
-        run: python src/nlang.py main.n # `src/main.py` を実行
+        run: python src/nlang.py test.n # `src/main.py` を実行
