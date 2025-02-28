@@ -80,7 +80,8 @@ class Parser:
             elif_condition = self.parse_expression()
             self.consume()  # ":"
             elif_body = self.parse_block()
-            elif_blocks.append((elif_condition, elif_body))
+            elif_blocks.append((elif_condition, elif_body))  # ✅ タプルで追加！
+
     
         if self.peek() and self.peek()[0] == "KEYWORD" and self.peek()[1] == "else":
             self.consume()  # "else"
