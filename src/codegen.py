@@ -57,7 +57,10 @@ class BytecodeGenerator:
 
                 for stmt in node.else_body:
                     self.generate(stmt)
-
+            else:
+                # `if` や `elif` のブロックが終わった後、スキップするためのジャンプを設定
+                self.bytecode.append(("JUMP_ABSOLUTE", len(self.bytecode)))
+        
         elif isinstance(node, FunctionCall):
             for arg in node.args:
                 self.generate(arg)
