@@ -3,15 +3,44 @@ from typing import List, Optional
 import json
 
 def ast_to_dict(node):
-    """ ASTを辞書形式に変換（再帰的に展開）"""
     if isinstance(node, list):
         return [ast_to_dict(n) for n in node]
-    elif isinstance(node, ASTNode):
+    elif isinstance(node, IfStatement):
         return {
-            "type": node.__class__.__name__,
-            **{k: ast_to_dict(v) for k, v in vars(node).items()}
+            "type": "IfStatement",
+            "condition": ast_to_dict(node.condition),
+            "body": ast_to_dict(node.body),
+            "elif_blocks": ast_to_dict(node.elif_blocks),
+            "else_body": ast_to_dict(node.else_body)
         }
-    return node  # 数値や文字列はそのまま
+    elif isinstance(node, BinaryOp):  # BinaryOp を変換！
+        return {
+            "type": "BinaryOp",
+            "left": ast_to_dict(node.left),
+            "op": node.op,
+            "right": ast_to_dict(node.right)
+        }
+    elif isinstance(node, Identifier):
+        return {"type": "Identifier", "name": node.name}
+    elif isinstance(node, Number):
+        return {"type": "Number", "value": node.value}
+    elif isinstance(node, String):
+        return {"type": "String", "value": node.value}
+    elif isinstance(node, FunctionCall):
+        return {
+            "type": "FunctionCall",
+            "name": node.name,
+            "args": ast_to_dict(node.args)
+        }
+    elif isinstance(node, Assignment):
+        return {
+            "type": "Assignment",
+            "name": node.name,
+            "value": ast_to_dict(node.value)
+        }
+    else:
+        raise TypeError(f"Unsupported AST node type: {type(node).__name__}")
+
 
 
 # ASTの基本クラス
