@@ -8,6 +8,8 @@ import json
 from tokenize import tokenize, print_tokens
 from parser import Parser
 from ast_nodes import ast_to_dict
+from codegen import BytecodeGenerator
+from vm import VirtualMachine
 
 def main():
     if len(sys.argv) != 2:
@@ -30,6 +32,17 @@ def main():
     # AST を出力
     print("AST:")
     print(json.dumps(ast_to_dict(ast), indent=2, ensure_ascii=False))
+
+    # バイトコード生成
+    generator = BytecodeGenerator()
+    bytecode = generator.generate(ast)
+    print("Bytecode:")
+    for instr in bytecode:
+        print(f"  {instr}")
+
+    # 仮想マシンで実行
+    vm = VirtualMachine()
+    vm.execute(bytecode)
 
 if __name__ == "__main__":
     main()
