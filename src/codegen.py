@@ -37,13 +37,24 @@ class BytecodeGenerator:
 
         elif isinstance(node, IfStatement):
             self.generate(node.condition)  # 条件式を評価
-            jump_idx = len(self.bytecode)
-            self.bytecode.append(("JUMP_IF_FALSE", None))  # 後でアドレスを埋める
+            jump_if_false_idx = len(self.bytecode)
+            self.bytecode.append(("JUMP_IF_FALSE", None))  # else へジャンプ
         
             for stmt in node.body:
                 self.generate(stmt)
         
-            self.bytecode[jump_idx] = ("JUMP_IF_FALSE", len(self.bytecode))  # アドレス修正
+            if node.else_body:
+                jump_absolute_idx = len(self.bytecode)
+                self.bytecode.append(("JUMP_ABSOLUTE", None))  # else をスキップ
+                self.bytecode[jump_if_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))  # else へジャンプ
+        
+                for stmt in node.else_body:
+                    self.generate(stmt)
+        
+                self.bytecode[jump_absolute_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))  # else の後へジャンプ
+            else:
+                self.bytecode[jump_if_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))
+
         
         elif isinstance(node, FunctionDef):
             # 関数定義は将来的に実装（関数オブジェクトを作る）
