@@ -79,19 +79,27 @@ class Parser:
         return body
 
     def parse_expression(self):
-        """ 単純な式（数値、関数呼び出しなど）を解析 """
-        token = self.consume()
-
-        if token[0] == "NUMBER":
-            return Number(float(token[1]))
-        elif token[0] == "STRING":
-            return String(token[1])
-        elif token[0] == "IDENTIFIER":
+        """ 単純な式（数値、識別子、関数呼び出し）を解析 """
+        left = self.consume()
+    
+        if left[0] == "NUMBER":
+            left_node = Number(float(left[1]))
+        elif left[0] == "STRING":
+            left_node = String(left[1])
+        elif left[0] == "IDENTIFIER":
             if self.peek() and self.peek()[0] == "PUNCT" and self.peek()[1] == "(":
-                return self.parse_function_call(token[1])
-            return Identifier(token[1])
+                return self.parse_function_call(left[1])
+            left_node = Identifier(left[1])
         else:
-            raise SyntaxError(f"Unexpected token: {token}")
+            raise SyntaxError(f"Unexpected token: {left}")
+    
+        # もし演算子（OPERATOR）が続く場合、それを処理する
+        if self.peek() and self.peek()[0] == "OPERATOR":
+            op = self.consume()[1]  # 演算子を取得
+            right_node = self.parse_expression()  # 右辺を解析
+            return BinaryOp(left=left_node, op=op, right=right_node)
+    
+        return left_node
 
     def parse_function_call(self, name):
         """ 関数呼び出しを解析 """
