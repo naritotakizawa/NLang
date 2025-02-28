@@ -36,24 +36,38 @@ class BytecodeGenerator:
                 raise ValueError(f"Unsupported operator: {node.op}")
 
         elif isinstance(node, IfStatement):
-            self.generate(node.condition)  # 条件式を評価
+            self.generate(node.condition)
             jump_if_false_idx = len(self.bytecode)
-            self.bytecode.append(("JUMP_IF_FALSE", None))  # else へジャンプ
+            self.bytecode.append(("JUMP_IF_FALSE", None))
         
             for stmt in node.body:
                 self.generate(stmt)
         
+            jump_end_idx = None
+            if node.elif_blocks:
+                jump_end_idx = len(self.bytecode)
+                self.bytecode.append(("JUMP_ABSOLUTE", None))
+                self.bytecode[jump_if_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))
+        
+                for elif_condition, elif_body in node.elif_blocks:
+                    self.generate(elif_condition)
+                    jump_elif_false_idx = len(self.bytecode)
+                    self.bytecode.append(("JUMP_IF_FALSE", None))
+        
+                    for stmt in elif_body:
+                        self.generate(stmt)
+        
+                    self.bytecode.append(("JUMP_ABSOLUTE", None))  
+                    jump_end_idx = len(self.bytecode) - 1
+                    self.bytecode[jump_elif_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))
+        
             if node.else_body:
-                jump_absolute_idx = len(self.bytecode)
-                self.bytecode.append(("JUMP_ABSOLUTE", None))  # else をスキップ
-                self.bytecode[jump_if_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))  # else へジャンプ
+                if jump_end_idx is not None:
+                    self.bytecode[jump_end_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))
         
                 for stmt in node.else_body:
                     self.generate(stmt)
-        
-                self.bytecode[jump_absolute_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))  # else の後へジャンプ
-            else:
-                self.bytecode[jump_if_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))
+
 
         
         elif isinstance(node, FunctionDef):
