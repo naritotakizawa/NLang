@@ -1,5 +1,4 @@
-def hello():
-    print("Hello, world!")
-    if 10 > 5:
-        print("Indent test")
+print("Hello, world!")
+if 10 > 5:
+    print("Indent test")
 print("Done")
