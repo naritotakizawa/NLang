@@ -43,7 +43,9 @@ class BytecodeGenerator:
         elif isinstance(node, FunctionDef):
             # 関数定義は将来的に実装（関数オブジェクトを作る）
             pass
-
+        elif isinstance(node, Assignment):  # 変数代入を処理！
+            self.generate(node.value)  # 右辺（値）を評価
+            self.bytecode.append(("STORE_NAME", node.name))  # 変数に格納
         else:
             raise ValueError(f"Unsupported AST node: {node}")
 
