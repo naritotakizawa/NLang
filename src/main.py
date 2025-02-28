@@ -19,9 +19,12 @@ def main():
     # トークナイズ
     tokens = tokenize(code)
 
-    # 結果を表示
-    for token in tokens:
-        print(token)
+    # パース
+    parser = Parser(tokens)
+    ast = parser.parse()
+
+    # ASTの表示
+    print(ast)
 
 if __name__ == "__main__":
     main()
