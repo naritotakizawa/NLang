@@ -1,25 +1,49 @@
 import re
 
+# キーワード一覧
+KEYWORDS = {'def', 'if', 'else', 'return', 'while', 'for', 'in', 'print'}
+
 # トークンの種類
 TOKEN_SPECIFICATION = [
     ('NUMBER',   r'\d+(\.\d*)?'),  # 整数または小数
-    ('KEYWORD',    r'[a-zA-Z_]\w*'),   # 識別子（変数や関数名）
-    ('STRING',   r'".*?"'),         # 文字列リテラル
-    ('NEWLINE',  r'\n'),             # 改行
-    ('SKIP',     r'[ \t]+'),         # 空白やタブ（スキップ）
-    ('PUNCT',    r'[(){}:,]'),        # 記号
-    ('UNKNOWN',  r'.'),               # 不明な文字
+    ('STRING',   r'".*?"'),        # 文字列リテラル
+    ('NEWLINE',  r'\n'),           # 改行
+    ('SKIP',     r'[ \t]+'),       # 空白やタブ（スキップ）
+    ('COMMENT',  r'#.*'),          # コメント（スキップ）
+    ('PUNCT',    r'[(){}:,]'),     # 記号
+    ('IDENTIFIER', r'[a-zA-Z_]\w*'),  # 変数や関数名（後でKEYWORDと区別）
+    ('UNKNOWN',  r'.'),            # 不明な文字
 ]
 
 token_re = re.compile('|'.join(f'(?P<{name}>{pattern})' for name, pattern in TOKEN_SPECIFICATION))
 
 def tokenize(code):
     tokens = []
-    for match in token_re.finditer(code):
-        kind = match.lastgroup
-        value = match.group()
-        if kind == 'SKIP':
-            continue
-        tokens.append((kind, value))
+    indent_stack = [0]  # インデントレベルのスタック
+    for line in code.splitlines():
+        # インデントの処理
+        stripped = line.lstrip()
+        indent = len(line) - len(stripped)
+        if indent > indent_stack[-1]:
+            indent_stack.append(indent)
+            tokens.append(('INDENT', indent))
+        while indent < indent_stack[-1]:
+            indent_stack.pop()
+            tokens.append(('DEDENT', indent))
+
+        # トークン化
+        for match in token_re.finditer(stripped):
+            kind = match.lastgroup
+            value = match.group()
+            if kind == 'SKIP' or kind == 'COMMENT':
+                continue
+            if kind == 'IDENTIFIER' and value in KEYWORDS:
+                kind = 'KEYWORD'  # キーワードを特別扱い
+            tokens.append((kind, value))
+
+    # 最後にすべてのインデントをリセット
+    while len(indent_stack) > 1:
+        indent_stack.pop()
+        tokens.append(('DEDENT', 0))
+
     return tokens
-  
