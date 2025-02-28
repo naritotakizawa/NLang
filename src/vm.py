@@ -38,7 +38,7 @@ class VirtualMachine:
                 left = self.stack.pop()
                 op_symbol = args[0]
 
-              if op_symbol == "+":
+                if op_symbol == "+":
                     self.stack.append(left + right)
                 elif op_symbol == "-":
                     self.stack.append(left - right)
