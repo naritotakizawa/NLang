@@ -22,8 +22,6 @@ class VirtualMachine:
                 name = args[0]
                 if name in self.variables:
                     self.stack.append(self.variables[name])  # 変数の値を積む
-                else:
-                    raise NameError(f"Undefined variable: {name}")
 
             elif op == "CALL_FUNCTION":
                 func_name = args[0]
