@@ -1,7 +1,7 @@
 import re
 
 # キーワード一覧
-KEYWORDS = {'def', 'if', 'else', 'return', 'while', 'for', 'in', 'print'}
+KEYWORDS = {'def', 'if', 'else', 'return', 'while', 'for', 'in'}
 
 # トークンの種類
 TOKEN_SPECIFICATION = [
