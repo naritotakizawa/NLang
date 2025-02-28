@@ -13,12 +13,17 @@ class VirtualMachine:
             if op == "LOAD_CONST":
                 self.stack.append(args[0])
 
+            elif op == "STORE_NAME":
+                name = args[0]
+                value = self.stack.pop()
+                self.variables[name] = value  # 変数に保存
+
             elif op == "LOAD_NAME":
                 name = args[0]
-                if name in self.globals:
-                    self.stack.append(self.globals[name])
+                if name in self.variables:
+                    self.stack.append(self.variables[name])  # 変数の値を積む
                 else:
-                    self.stack.append(name)  # 関数として扱う
+                    raise NameError(f"Undefined variable: {name}")
 
             elif op == "CALL_FUNCTION":
                 func_name = args[0]
