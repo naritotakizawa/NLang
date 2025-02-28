@@ -72,7 +72,10 @@ class VirtualMachine:
             elif op == "JUMP_IF_FALSE":
                 condition = self.stack.pop()
                 if not condition:
-                    pc = args[0] - 1  # ジャンプ（-1 は for ループ補正）
+                    pc = args[0] - 1  # else へジャンプ
+            
+            elif op == "JUMP_ABSOLUTE":
+                pc = args[0] - 1  # if の処理が終わったら else をスキップ
 
             elif op == "RETURN_VALUE":
                 return self.stack.pop()
