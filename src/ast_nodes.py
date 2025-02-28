@@ -1,5 +1,18 @@
 from dataclasses import dataclass
 from typing import List, Optional
+import json
+
+def ast_to_dict(node):
+    """ ASTを辞書形式に変換（再帰的に展開）"""
+    if isinstance(node, list):
+        return [ast_to_dict(n) for n in node]
+    elif isinstance(node, ASTNode):
+        return {
+            "type": node.__class__.__name__,
+            **{k: ast_to_dict(v) for k, v in vars(node).items()}
+        }
+    return node  # 数値や文字列はそのまま
+
 
 # ASTの基本クラス
 @dataclass
