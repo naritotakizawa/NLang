@@ -24,73 +24,57 @@ class BytecodeGenerator:
                 raise ValueError(f"Unsupported operator: {node.op}")
 
         elif isinstance(node, IfStatement):
-            #
-            # === IF PART ===
-            #
-            # 1) if の条件をコンパイル
+            # ============ IF PART ============
             self.generate(node.condition)
             jump_if_false_idx = len(self.bytecode)
-            # if失敗時に飛ぶ先はまだ分からないので仮置き (None)
-            self.bytecode.append(("JUMP_IF_FALSE", None))
-        
-            # 2) if の本体をコンパイル
+            self.bytecode.append(("JUMP_IF_FALSE", None))  # if失敗→elif/else
+            
+            # if body
             for stmt in node.body:
                 self.generate(stmt)
-        
-            # 3) if に成功した場合、後続の elif / else をスキップ
+    
+            # if成功→後続をスキップ
             jump_after_if_idx = len(self.bytecode)
             self.bytecode.append(("JUMP_ABSOLUTE", None))
-        
-            # 4) if が失敗した場合のジャンプ先を修正
-            #    （今のバイトコード末尾 = elif 条件チェック の開始行）
+    
+            # if失敗時に飛ぶ先
             self.bytecode[jump_if_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))
-        
-            #
-            # === ELIF PART(s) ===
-            #
-            # すでに if が成功した場合は jump_after_if_idx の位置にある "JUMP_ABSOLUTE"
-            # を修正して、 "elif" ブロックをスキップする。
+    
+            # ============ ELIF PART ============
             last_jump_abs_idx = jump_after_if_idx
-        
+    
             if node.elif_blocks:
-                for (elif_condition, elif_body) in node.elif_blocks:
-                    # 1) elif の条件
-                    self.generate(elif_condition)
+                for (elif_cond, elif_body) in node.elif_blocks:
+                    # condition
+                    self.generate(elif_cond)
                     jump_elif_false_idx = len(self.bytecode)
-                    self.bytecode.append(("JUMP_IF_FALSE", None))
-        
-                    # 2) elif の本体
+                    self.bytecode.append(("JUMP_IF_FALSE", None))  # このelif失敗→次へ
+    
+                    # body
                     for stmt in elif_body:
                         self.generate(stmt)
-        
-                    # 3) この elif が成功した場合、さらに後続(次のelif/else)をスキップ
+    
+                    # このelif成功→更に後続(次のelif/else)スキップ
                     jump_after_elif_idx = len(self.bytecode)
                     self.bytecode.append(("JUMP_ABSOLUTE", None))
-        
-                    # 前ブロック (if or 前の elif) が「成功」したらここをスキップ
-                    #   → つまり if 成功したら elif の条件には来ないし、
-                    #      前の elif 成功したらこの elif はスキップ という動作
+    
+                    # 前ブロック(if/前elif)成功時のJUMP_ABSOLUTE書き換え
                     self.bytecode[last_jump_abs_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))
-        
-                    # この elif が失敗 (条件が False) した場合に飛ぶ先 → 次の elif / else
+    
+                    # このelif失敗時
                     self.bytecode[jump_elif_false_idx] = ("JUMP_IF_FALSE", len(self.bytecode))
-        
-                    # 次のブロックで書き換える用
+    
+                    # 次に備えて更新
                     last_jump_abs_idx = jump_after_elif_idx
-        
-            #
-            # === ELSE PART ===
-            #
+    
+            # ============ ELSE PART ============
             if node.else_body:
-                # 最後に成功したブロックがあれば、そちらから else をスキップ
+                # 前ブロック成功時→elseスキップ
                 self.bytecode[last_jump_abs_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))
-        
-                # else 本体をコンパイル
                 for stmt in node.else_body:
                     self.generate(stmt)
-        
             else:
-                # else がない場合、最後の JUMP_ABSOLUTE を末尾に合わせる
+                # else 無し → 最後のジャンプ先を末尾へ
                 self.bytecode[last_jump_abs_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))
 
 
