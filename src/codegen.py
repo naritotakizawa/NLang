@@ -82,6 +82,7 @@ class BytecodeGenerator:
             else:
                 # elseが無い場合、最後にジャンプ先を末尾に合わせる
                 self.bytecode[last_jump_abs_idx] = ("JUMP_ABSOLUTE", len(self.bytecode))
+
         elif isinstance(node, FunctionCall):
             for arg in node.args:
                 self.generate(arg)
