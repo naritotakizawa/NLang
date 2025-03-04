@@ -70,12 +70,13 @@ class VirtualMachine:
                     raise ValueError(f"Unsupported comparison operator: {op_symbol}")
 
             elif op == "JUMP_IF_FALSE":
-                condition = self.stack.pop()
-                if not condition:
-                    pc = args[0] - 1  # else へジャンプ
-            
+                cond = self.stack.pop()
+                if not cond:
+                    pc = args[0]
+                    continue
             elif op == "JUMP_ABSOLUTE":
-                pc = args[0] - 1  # if の処理が終わったら else をスキップ
+                pc = args[0]
+                continue
 
             elif op == "RETURN_VALUE":
                 return self.stack.pop()
