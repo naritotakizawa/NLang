@@ -72,23 +72,14 @@ class Parser:
         self.consume()  # ":"
         body = self.parse_block()  # if ブロック
     
-        elif_blocks = []  # `elif` のリスト
         else_body = []
-    
-        while self.peek() and self.peek()[0] == "KEYWORD" and self.peek()[1] == "elif":
-            self.consume()  # "elif"
-            elif_condition = self.parse_expression()
-            self.consume()  # ":"
-            elif_body = self.parse_block()
-            elif_blocks.append((elif_condition, elif_body))  # ✅ タプルで追加！
-
-    
-        if self.peek() and self.peek()[0] == "KEYWORD" and self.peek()[1] == "else":
-            self.consume()  # "else"
-            self.consume()  # ":"
+        tok = self.peek()
+        if tok and tok[0] == "KEYWORD" and tok[1] == "else":
+            self.consume()  # else
+            self.consume()  # ':'
             else_body = self.parse_block()
-    
-        return IfStatement(condition, body, elif_blocks, else_body)
+
+        return IfStatement(condition, body, else_body)
 
     
     def parse_block(self):
